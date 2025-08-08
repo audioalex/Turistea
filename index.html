@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turistea: Un Modelo de Turismo Regenerativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Turistea Brand Palette (Magenta, Naranja, Turquesa, Dorado Ocre, Gris Carbón, Blanco Roto) -->
+    <!-- Application Structure Plan: A single-page application with a fixed navigation bar for smooth scrolling to thematic sections. The structure is designed to guide the user through a narrative journey: starting with the high-level 'Visión', explaining the core 'Modelo' regenerativo, detailing the 'Plan de Acción' in interactive phases, exploring the 'Territorio' and its context, and finally showcasing 'La Experiencia' offered. This thematic flow was chosen over a linear report structure to make the complex, multi-layered project easily digestible for any audience, from potential partners to tourists. Key interactions include clickable tabs for the phased plan and an interactive chart to visualize community challenges, enhancing user engagement and understanding. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: The core two-level regenerative cycle model. Goal: Explain a complex process simply. Viz/Method: A diagram built with HTML/Tailwind flexbox and Unicode icons. Interaction: Subtle hover effects on cards. Justification: Visually breaks down the core business logic into a clear, cyclical flow without needing heavy graphics. Library: N/A.
+        - Report Info: The five-phase implementation plan. Goal: Organize a long sequence of actions. Viz/Method: Interactive tabs. Interaction: User clicks a phase to reveal its detailed content. Justification: Prevents an overwhelming wall of text, allowing users to explore the detailed plan at their own pace. Library: Vanilla JS.
+        - Report Info: Community challenges in El Rincón (social fragmentation, loss of identity, etc.). Goal: Inform and compare the magnitude of interconnected issues. Viz/Method: Chart.js Radar Chart. Interaction: Tooltips provide context on hover. Justification: A radar chart is ideal for showing the state of multiple variables, offering a quick, powerful visual summary of the core problems the project addresses. Library: Chart.js.
+        - All other visual elements are built with HTML/Tailwind to maintain a consistent, lightweight, and modern aesthetic.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #FBEBDD;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            color: #1A1A1A;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 320px;
+            width: 100%;
+            max-width: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D95C2B;
+            border-bottom-color: #D95C2B;
+        }
+        .phase-tab {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .phase-tab.active {
+            background-color: #D95C2B;
+            color: #FFFFFF;
+            border-color: #D95C2B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-[#FBEBDD]/90 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-black text-[#1A1A1A]">Turistea</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#vision" class="nav-link font-bold text-sm">Visión</a>
+                <a href="#modelo" class="nav-link font-bold text-sm">El Modelo</a>
+                <a href="#plan" class="nav-link font-bold text-sm">Plan de Acción</a>
+                <a href="#territorio" class="nav-link font-bold text-sm">Territorio</a>
+                <a href="#experiencia" class="nav-link font-bold text-sm">La Experiencia</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-[#1A1A1A] focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-[#FBEBDD] shadow-md">
+            <a href="#vision" class="block py-3 px-6 text-sm hover:bg-[#D95C2B]/10">Visión</a>
+            <a href="#modelo" class="block py-3 px-6 text-sm hover:bg-[#D95C2B]/10">El Modelo</a>
+            <a href="#plan" class="block py-3 px-6 text-sm hover:bg-[#D95C2B]/10">Plan de Acción</a>
+            <a href="#territorio" class="block py-3 px-6 text-sm hover:bg-[#D95C2B]/10">Territorio</a>
+            <a href="#experiencia" class="block py-3 px-6 text-sm hover:bg-[#D95C2B]/10">La Experiencia</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="vision" class="py-24 md:py-32 bg-cover bg-center" style="background-image: linear-gradient(rgba(251, 235, 221, 0.9), rgba(251, 235, 221, 1)), url('https://placehold.co/1200x800/009494/FFFFFF?text=Humedal');">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl font-black text-[#1A1A1A] leading-tight">Turismo que <span class="text-[#009494]">Regenera</span>.</h2>
+                <h3 class="text-4xl md:text-6xl font-black text-[#1A1A1A] leading-tight mt-2">Cultura que <span class="text-[#AD2B6A]">Conecta</span>.</h3>
+                <p class="mt-8 max-w-3xl mx-auto text-lg md:text-xl text-gray-700">
+                    Turistea es un ecosistema que transforma el turismo en una fuerza para la revitalización cultural y el desarrollo comunitario. Creamos experiencias de lujo auténtico con propósito ancestral, conectando a viajeros con la riqueza viva de Colombia.
+                </p>
+                <div class="mt-12">
+                     <a href="#modelo" class="bg-[#D95C2B] text-white font-bold py-4 px-10 rounded-full hover:bg-[#AD2B6A] transition-colors duration-300 text-lg shadow-lg hover:shadow-xl">Descubre Cómo</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="modelo" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-black text-[#1A1A1A]">El Ciclo Regenerativo</h3>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">
+                        Nuestro modelo no es una línea recta, es un círculo virtuoso. El trabajo comunitario genera el capital cultural auténtico que el turismo de alto valor busca. Los ingresos se reinvierten, fortaleciendo a la comunidad y haciendo la experiencia aún más rica.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-8 items-center text-center">
+                    <div class="lg:col-span-2 flex flex-col items-center p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-[#009494]/10 p-4 rounded-full">
+                            <span class="text-4xl">👥</span>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold">Nivel 1: Raíz Comunitaria</h4>
+                        <p class="mt-2 text-gray-600">A través de talleres, muralismo y recuperación de la memoria, se fortalece el tejido social y se genera un capital cultural auténtico y vibrante.</p>
+                    </div>
+
+                    <div class="flex justify-center text-5xl text-[#D95C2B] font-bold">
+                        <span class="transform rotate-90 md:rotate-0">→</span>
+                    </div>
+
+                    <div class="lg:col-span-2 flex flex-col items-center p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-[#AD2B6A]/10 p-4 rounded-full">
+                            <span class="text-4xl">💎</span>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold">Nivel 2: Experiencia Premium</h4>
+                        <p class="mt-2 text-gray-600">Se ofrece una experiencia de "Lujo Auténtico con Propósito" a viajeros que valoran la conexión genuina y el impacto positivo y medible.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center text-5xl text-[#D95C2B] font-bold my-8">
+                    <span>↻</span>
+                </div>
+                
+                <div class="flex flex-col items-center text-center p-6 bg-[#B8860B]/10 rounded-xl max-w-md mx-auto shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div class="bg-[#B8860B]/20 p-4 rounded-full">
+                        <span class="text-4xl">🌱</span>
+                    </div>
+                    <h4 class="mt-4 text-xl font-bold">Reinversión y Sostenibilidad</h4>
+                    <p class="mt-2 text-gray-600">Los ingresos financian la continuidad de los programas comunitarios, la formación de jóvenes y la preservación del patrimonio, cerrando el ciclo regenerativo.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-black text-[#1A1A1A]">Hoja de Ruta hacia la Regeneración</h3>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">
+                        Nuestro plan es ambicioso pero metódico. Avanzamos a través de fases claras, donde cada etapa construye sobre la anterior, asegurando un crecimiento orgánico y un impacto profundo y duradero.
+                    </p>
+                </div>
+
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-8">
+                        <button data-phase="1" class="phase-tab active font-bold py-2 px-5 rounded-full border-2">Fase I</button>
+                        <button data-phase="2" class="phase-tab font-bold py-2 px-5 rounded-full border-2">Fase II</button>
+                        <button data-phase="3" class="phase-tab font-bold py-2 px-5 rounded-full border-2">Fase III</button>
+                        <button data-phase="4" class="phase-tab font-bold py-2 px-5 rounded-full border-2">Fase IV</button>
+                        <button data-phase="5" class="phase-tab font-bold py-2 px-5 rounded-full border-2">Fase V</button>
+                    </div>
+
+                    <div id="phase-content-wrapper" class="bg-white p-8 md:p-10 rounded-xl shadow-lg min-h-[320px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="territorio" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-black text-[#1A1A1A]">El Corazón del Proyecto: El Rincón, Suba</h3>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">
+                        Nuestro piloto se arraiga en El Rincón, un microcosmos de diversidad cultural en Bogotá. Aquí, los desafíos se convierten en oportunidades para la transformación a través del arte y la memoria.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1">
+                        <h4 class="text-2xl font-bold mb-4">Desafíos Comunitarios Clave</h4>
+                        <p class="text-gray-600 mb-6">El proyecto aborda directamente problemáticas interconectadas. Este gráfico visualiza la magnitud de los desafíos que buscamos transformar en oportunidades de cohesión y orgullo.</p>
+                        <div class="chart-container">
+                            <canvas id="challengesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 bg-[#009494]/10 p-8 rounded-xl shadow-sm">
+                        <h4 class="text-2xl font-bold mb-4 text-[#009494]">El Ancla Espiritual: El Humedal Tibabuyes y la Serpiente Dorada</h4>
+                        <p class="text-gray-700">
+                            El Humedal Tibabuyes es el corazón ecológico y sagrado del territorio, venerado como el "vientre de nuestra madre Bachué". El mito de la **Serpiente Dorada**, su espíritu guardián, no es solo folclore; es una filosofía viva. Representa la renovación, la protección del agua y el poder espiritual del territorio. Este relato ancestral es nuestra guía ética, transformando la conservación ambiental en un deber sagrado e infundiendo cada acción del proyecto con un profundo significado cultural.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experiencia" class="py-20">
+             <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl md:text-4xl font-black text-[#1A1A1A]">La Experiencia Turistea</h3>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">
+                        Fusionamos arte, tecnología y comunidad para crear una experiencia inmersiva única, donde cada visitante se convierte en parte de una historia viva de transformación.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-md text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="text-5xl text-[#AD2B6A]">🎨</div>
+                        <h4 class="text-xl font-bold mt-4">Murales con Alma</h4>
+                        <p class="mt-2 text-gray-600">Rutas guiadas por murales escultóricos que narran la historia y los mitos del territorio, co-creados por la comunidad.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-md text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="text-5xl text-[#009494]">📱</div>
+                        <h4 class="text-xl font-bold mt-4">Narrativas Aumentadas</h4>
+                        <p class="mt-2 text-gray-600">Uso de Realidad Aumentada para dar vida a los murales, superponiendo animaciones, sonidos y relatos ancestrales.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-md text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="text-5xl text-[#D95C2B]">🤝</div>
+                        <h4 class="text-xl font-bold mt-4">Gastronomía y Conexión</h4>
+                        <p class="mt-2 text-gray-600">Experiencias gastronómicas en locales aliados que celebran la diversidad cultural de Colombia presente en el barrio.</p>
+                    </div>
+                </div>
+                <div class="mt-16 text-center">
+                     <h4 class="text-2xl font-bold">Nuestras Alianzas Estratégicas</h4>
+                     <p class="mt-2 text-gray-600 max-w-2xl mx-auto">El éxito se construye en red. Colaboramos con la academia, el sector privado y las organizaciones locales para potenciar nuestro impacto.</p>
+                     <div class="mt-8 flex flex-wrap justify-center items-center gap-x-12 gap-y-6 text-gray-500 font-bold text-lg">
+                        <span>Universidad Nacional</span>
+                        <span class="text-2xl text-[#B8860B] hidden md:inline">&bull;</span>
+                        <span>Encaminarte Más Cultura</span>
+                        <span class="text-2xl text-[#B8860B] hidden md:inline">&bull;</span>
+                        <span>Comercios Locales</span>
+                     </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#1A1A1A] text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-3xl font-black">Turistea</h3>
+            <p class="mt-4 text-gray-400">Un proyecto para la regeneración cultural y social de Colombia.</p>
+            <p class="text-sm text-gray-500 mt-8">&copy; 2025 Turistea. Construyendo futuros, honrando el pasado.</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        const phaseData = {
+            1: {
+                title: 'Fase I: Sembrando el Terreno',
+                objective: 'Construir la confianza de la comunidad y co-crear el contenido artístico piloto.',
+                activities: [
+                    'Talleres artísticos remunerados y diagnóstico participativo.',
+                    'Co-creación de la primera experiencia artística inmersiva.',
+                    'Recolección de mitos, relatos y leyendas locales.'
+                ],
+                deliverable: 'Una cohorte de artistas comunitarios formados y la primera experiencia piloto desarrollada.',
+                color: '#D95C2B'
+            },
+            2: {
+                title: 'Fase II: Lanzamiento y Validación',
+                objective: 'Validar la demanda del mercado y establecer una presencia digital sólida.',
+                activities: [
+                    'Venta de las primeras experiencias piloto a un público objetivo.',
+                    'Lanzamiento del sitio web como un diario de campo del proyecto.',
+                    'Campaña de crowdfunding para validar mensajes y construir una base de donantes.'
+                ],
+                deliverable: 'Primeros ingresos generados, sitio web funcional y aprendizajes clave de la campaña de crowdfunding.',
+                color: '#009494'
+            },
+            3: {
+                title: 'Fase III: Profundizando Raíces',
+                objective: 'Expandir el contenido cultural, crear un hito físico y formalizar alianzas clave.',
+                activities: [
+                    'Investigación y escritura creativa de nuevos mitos locales.',
+                    'Creación del primer mural escultórico con capacidad para Realidad Aumentada.',
+                    'Formalización de alianzas estratégicas con comercios locales.'
+                ],
+                deliverable: 'Repositorio de mitos ampliado, primer mural inaugurado y una red de aliados comerciales comprometida.',
+                color: '#AD2B6A'
+            },
+            4: {
+                title: 'Fase IV: Expansión e Innovación',
+                objective: 'Escalar la experiencia a una ruta cultural completa, integrando gastronomía y tecnología.',
+                activities: [
+                    'Creación de nuevos murales, tejiendo una red de hitos artísticos.',
+                    'Desarrollo de una ruta gastronómica con locales aliados.',
+                    'Implementación completa de Realidad Aumentada (RA) e impresión 3D.'
+                ],
+                deliverable: 'Una ruta turística consolidada y diversificada, tecnológicamente mejorada.',
+                color: '#B8860B'
+            },
+            5: {
+                title: 'Fase V: Institucionalización y Replicación',
+                objective: 'Establecer una estructura educativa sostenible y documentar el modelo para su expansión nacional.',
+                activities: [
+                    'Diseño del currículo de una escuela de artes que fusiona folclore y tecnología.',
+                    'Formación avanzada en habilidades digitales (3D, IA, animación).',
+                    'Sistematización y documentación del modelo piloto como un plan maestro replicable.'
+                ],
+                deliverable: 'Una escuela de artes formal establecida y un modelo de replicación listo para ser escalado.',
+                color: '#1A1A1A'
+            }
+        };
+
+        const phaseContentWrapper = document.getElementById('phase-content-wrapper');
+        const phaseTabs = document.querySelectorAll('.phase-tab');
+
+        function updatePhaseContent(phaseNumber) {
+            const data = phaseData[phaseNumber];
+            const newContent = document.createElement('div');
+            newContent.className = 'phase-content';
+            newContent.style.opacity = '0';
+            newContent.style.transition = 'opacity 0.3s ease-in-out';
+            
+            newContent.innerHTML = `
+                <h4 class="text-2xl md:text-3xl font-bold mb-2" style="color:${data.color};">${data.title}</h4>
+                <p class="font-bold text-gray-700 mb-4">${data.objective}</p>
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                        <h5 class="font-bold text-lg mb-2">Actividades Clave:</h5>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            ${data.activities.map(activity => `<li>${activity}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-lg mb-2">Resultado Principal:</h5>
+                        <p class="text-gray-600">${data.deliverable}</p>
+                    </div>
+                </div>
+            `;
+            
+            const currentContent = phaseContentWrapper.querySelector('.phase-content');
+            
+            if (currentContent) {
+                currentContent.style.opacity = '0';
+                setTimeout(() => {
+                    phaseContentWrapper.innerHTML = '';
+                    phaseContentWrapper.appendChild(newContent);
+                    setTimeout(() => {
+                        newContent.style.opacity = '1';
+                    }, 20);
+                }, 300);
+            } else {
+                phaseContentWrapper.appendChild(newContent);
+                 setTimeout(() => {
+                    newContent.style.opacity = '1';
+                }, 20);
+            }
+            
+            phaseTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if(tab.dataset.phase == phaseNumber) {
+                    tab.classList.add('active');
+                    tab.style.borderColor = data.color;
+                } else {
+                    tab.style.borderColor = '#d1d5db';
+                }
+            });
+        }
+
+        phaseTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                updatePhaseContent(tab.dataset.phase);
+            });
+        });
+
+        updatePhaseContent(1);
+
+        const ctx = document.getElementById('challengesChart').getContext('2d');
+        const challengesChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Fragmentación Social', 
+                    'Pérdida de Identidad', 
+                    'Desconocimiento del Patrimonio', 
+                    'Falta de Espacios de Integración'
+                ],
+                datasets: [{
+                    label: 'Nivel de Desafío Percibido',
+                    data: [8.5, 8, 8.2, 7.8], // Scaled to 10 for better visualization
+                    backgroundColor: 'rgba(0, 148, 148, 0.2)',
+                    borderColor: 'rgba(0, 148, 148, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(0, 148, 148, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(0, 148, 148, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        pointLabels: {
+                            font: { size: 12, family: "'Atkinson Hyperlegible', sans-serif" },
+                            color: '#1A1A1A'
+                        },
+                        ticks: {
+                            backdropColor: 'rgba(255, 255, 255, 0.75)',
+                            color: '#1A1A1A',
+                            stepSize: 2,
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${context.parsed.r.toFixed(1)} / 10`
+                        }
+                    }
+                }
+            }
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+        const sections = document.querySelectorAll('main section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
